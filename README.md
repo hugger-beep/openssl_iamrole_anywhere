@@ -398,55 +398,7 @@ aws secretsmanager create-secret \
   --secret-string file://app.pem
 ```
 
-#### **Production Application Integration**
-```python
-#!/usr/bin/env python3
-import boto3
-import subprocess
-import tempfile
-import os
-import json
 
-class IAMRolesAnywhereAuth:
-    def __init__(self, region='us-east-1'):
-        self.secrets_client = boto3.client('secretsmanager', region_name=region)
-    
-    def get_aws_credentials(self, trust_anchor_arn, profile_arn, role_arn):
-        # Get certificates from Secrets Manager
-        cert_response = self.secrets_client.get_secret_value(
-            SecretId='prod/iam-roles-anywhere/app-certificate'
-        )
-        key_response = self.secrets_client.get_secret_value(
-            SecretId='prod/iam-roles-anywhere/app-private-key'
-        )
-        
-        # Create secure temporary files
-        cert_fd, cert_path = tempfile.mkstemp(suffix='.pem')
-        key_fd, key_path = tempfile.mkstemp(suffix='.key')
-        
-        try:
-            with os.fdopen(cert_fd, 'w') as f:
-                f.write(cert_response['SecretString'])
-            with os.fdopen(key_fd, 'w') as f:
-                f.write(key_response['SecretString'])
-            
-            os.chmod(cert_path, 0o600)
-            os.chmod(key_path, 0o600)
-            
-            # Use aws_signing_helper
-            cmd = ['./aws_signing_helper', 'credential-process',
-                   '--certificate', cert_path, '--private-key', key_path,
-                   '--trust-anchor-arn', trust_anchor_arn,
-                   '--profile-arn', profile_arn, '--role-arn', role_arn]
-            
-            result = subprocess.run(cmd, capture_output=True, text=True, check=True)
-            return json.loads(result.stdout)
-        finally:
-            # Always cleanup
-            for path in [cert_path, key_path]:
-                if os.path.exists(path):
-                    os.unlink(path)
-```
 
 ### **🚨 Production Security Checklist**
 - ✅ **Secrets Manager**: All certificates stored in AWS Secrets Manager
