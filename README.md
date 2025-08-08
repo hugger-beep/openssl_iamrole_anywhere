@@ -286,7 +286,7 @@ spec:
 
 ### **🔄 Runtime Security Patterns**
 
-#### **In-Memory Only**
+#### **In-Memory Only** this is a sample
 ```python
 # Python example - never write to disk
 import boto3
