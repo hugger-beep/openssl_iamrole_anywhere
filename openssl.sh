@@ -1,4 +1,3 @@
-
 #!/bin/bash
 
 # IAM Roles Anywhere - Complete OpenSSL Certificate Setup Script
@@ -254,7 +253,7 @@ $(cat app.pem)
 EOF
 
 echo "Step 7b: Creating Zip Archive for Bulk Download..."
-# Create zip file for easy bulk download from CloudShell
+# Create zip file and copy to S3 using aws s3 cp filename.zip s3://bucketname/filename.zip
 cd ..
 zip -r iam-roles-anywhere-certificates.zip iam-roles-anywhere-certs/
 cd iam-roles-anywhere-certs
