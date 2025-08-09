@@ -49,7 +49,7 @@ chmod +x openssl.sh
 ```bash
 # Use generated commands in aws-commands.txt
 aws rolesanywhere create-trust-anchor \
-  --name "TI-OpenSSL-External-CA" \
+  --name "MyCompany-OpenSSL-External-CA" \
   --source sourceType=CERTIFICATE_BUNDLE,sourceData=file://ca.pem
 ```
 
